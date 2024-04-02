@@ -1,7 +1,8 @@
+import pkg from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../model/User.js';
-
+const { verify } = pkg;
 const generateJwt = (_id, Email, role) => {
   return jwt.sign(
     {_id, Email, role },
@@ -46,8 +47,27 @@ class UserController {
         return res.json({ token });
       }
 
-      async aboba(req,res,next){
-        console.log('aboba');
+      async update (req, res) {
+        
+        const { id} = req.body;
+        const decoded = verify(token, 'secret123')
+        console.log(decoded);
+        if (decoded._id !== id) {
+            return res.status(403).json({ message: "Недостаточно прав для изменения данных" })
+        }
+        await User.findByIdAndUpdate(id, req.body);
+        console.log(req.body);
+        return res.json({ message: "Данные пользователя успешно обновлены" });
+}
+      async getOne(req, res) {
+        const {id} = req.params
+        console.log(id);
+        const user = await User.findOne({_id:id})
+        return res.json(user)
+    }
+    async remove (req, res) {
+      const id = req.params.id;
+      await User.findByIdAndDelete(id);
       }
 }
 
