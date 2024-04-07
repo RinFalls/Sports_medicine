@@ -1,13 +1,13 @@
-import Kurs from '../model/Kurs.js';
+import Answer from '../model/Answer.js';
 
-class kursController {
+class answerController {
     async create(req, res, next) {
         try {
-            let {Name, AuthorId, Kateg, Time, 
+            let {Name, ForumId, AuthorId, Kateg, Answer, Like, DisLike
             } = req.body
 
-            const kurs = await Kurs.create({Name, AuthorId, Kateg, Time,})
-            return res.json(kurs)
+            const answer = await Answer.create({Name, ForumId, AuthorId, Kateg, Answer, Like, DisLike})
+            return res.json(answer)
         } catch (e) {
             console.log('error');
         }
@@ -15,27 +15,27 @@ class kursController {
 
 
     async getAll(req, res) {
-        const kurs = await Kurs.find()
-            return res.json(kurs)
+        const answer = await Answer.find()
+            return res.json(answer)
     }
         
     async getOne(req, res) {
         const {id} = req.params
         console.log(id);
-        const kurs = await Kurs.findOne({_id:id})
-        return res.json(kurs)
+        const answer = await Answer.findOne({_id:id})
+        return res.json(answer)
     }
 
     async update (req, res) {
         const { id} = req.body;
-        await Kurs.findByIdAndUpdate(id, req.body);
+        await Answer.findByIdAndUpdate(id, req.body);
         console.log(req.body);
         return res.json({ message: "Данные пользователя успешно обновлены" });
         
 }
     async remove (req, res) {
       const id = req.params.id;
-      await Kurs.findByIdAndDelete(id);
+      await Answer.findByIdAndDelete(id);
       }
 }
-export default new kursController()
+export default new answerController()

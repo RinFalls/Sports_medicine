@@ -1,12 +1,13 @@
-import Tasks from '../model/Tasks.js';
-class tasksController {
+import Forum from '../model/Forum.js';
+
+class forumController {
     async create(req, res, next) {
         try {
-            let {Name, AuthorId, Kateg, Opis,Thema,Complexity
+            let {Name, AuthorId, Kateg, Opis, Thema
             } = req.body
 
-            const tasks = await Tasks.create({Name, AuthorId, Kateg, Opis,Thema,Complexity})
-            return res.json(tasks)
+            const forum = await Forum.create({Name, AuthorId, Kateg, Opis, Thema})
+            return res.json(forum)
         } catch (e) {
             console.log('error');
         }
@@ -14,29 +15,27 @@ class tasksController {
 
 
     async getAll(req, res) {
-        const tasks = await Tasks.find()
-            return res.json(tasks)
+        const forum = await Forum.find()
+            return res.json(forum)
     }
-
-
+        
     async getOne(req, res) {
         const {id} = req.params
         console.log(id);
-        const tasks = await Tasks.findOne({_id:id})
-        return res.json(tasks)
+        const forum = await Forum.findOne({_id:id})
+        return res.json(forum)
     }
-
 
     async update (req, res) {
         const { id} = req.body;
-        await Tasks.findByIdAndUpdate(id, req.body);
+        await Forum.findByIdAndUpdate(id, req.body);
         console.log(req.body);
         return res.json({ message: "Данные пользователя успешно обновлены" });
         
 }
     async remove (req, res) {
       const id = req.params.id;
-      await Tasks.findByIdAndDelete(id);
+      await Forum.findByIdAndDelete(id);
       }
 }
-export default new tasksController()
+export default new forumController()

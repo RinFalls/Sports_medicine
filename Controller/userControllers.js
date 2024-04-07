@@ -60,21 +60,30 @@ class UserController {
  * @returns Если `decoded._id` не совпадает с `id` из тела запроса, будет возвращен ответ с кодом
  * состояния 403 и сообщением «Недостаточно прав для изменения данных». В противном случае, если
  * `decoded._id` соответствует `id`, пользовательские данные будут обновлены с использованием
- * `User.findByIdAndUpdate(id, req.body)` и ответа с
+ * `User.findByIdAndUpdate(id, req.body)` и ответа с "Данные пользователя успешно обновлены"
  */
-      async update (req, res) {
+async update (req, res) {
         
-        const { id} = req.body;
-        const decoded = verify(token, 'secret123')
-        console.log(decoded);
-        if (decoded._id !== id) {
-            return res.status(403).json({ message: "Недостаточно прав для изменения данных" })
-        }
-        await User.findByIdAndUpdate(id, req.body);
-        console.log(req.body);
-        return res.json({ message: "Данные пользователя успешно обновлены" });
-        
+  const { id, token} = req.body;
+  if (!token){
+    return res.status(403).json({ message: "отсутствует токен" })
+  }
+  try {
+      const decoded = verify(token, 'secret123')
+      console.log(decoded);
+      
+      if (decoded._id !== id) {
+          return res.status(403).json({ message: "Недостаточно прав для изменения данных" })
+      }
+
+      await User.findByIdAndUpdate(id, req.body);
+      console.log(req.body);
+      return res.json({ message: "Данные пользователя успешно обновлены" });
+  } catch (err) {
+      return res.status(403).json({ message: "Ошибка валидации токена" });
+  }
 }
+
       async getOne(req, res) {
         const {id} = req.params
         console.log(id);
